@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HFviewer
 // @namespace    https://github.com/lunnicingus/HF-viewer
-// @version      1.0
+// @version      1.1
 // @description  Better porn browse - based off the original EMPViewer
 // @author       lunnicingus
 // @match        https://www.happyfappy.org/torrents.php*
@@ -13,6 +13,18 @@
 // @downloadURL  https://github.com/lunnicingus/HF-viewer/raw/main/HFviewer.user.js
 // @grant        none
 // ==/UserScript==
+/* eslint-env browser, es2022, greasemonkey */
+/* global preact:readonly, htm:readonly */
+
+/**
+* Changelog
+*
+* 1.1 (Fixed Version)
+* - fix: Added globals for ESlint configuration
+*
+* 1.0
+* - Original script
+*/
 
 
 (function() {
