@@ -15,7 +15,6 @@
 // ==/UserScript==
 /* eslint-env browser, es2022, greasemonkey */
 /* global preact:readonly, htm:readonly */
-
 /**
 * Changelog
 *
