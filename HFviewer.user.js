@@ -1,22 +1,24 @@
 // ==UserScript==
 // @name         HFviewer
+// @version      1.2
 // @namespace    https://github.com/lunnicingus/HF-viewer
-// @version      1.1
 // @description  Better porn browse - based off the original EMPViewer
 // @author       lunnicingus
 // @match        https://www.happyfappy.org/torrents.php*
 // @match        https://www.happyfappy.org/top10.php*
 // @match        https://www.happyfappy.org/collages.php*
+// @match        https://www.happyfappy.org/bookmarks.php*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/preact/10.16.0/preact.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/htm/3.1.1/htm.js
-// @updateURL    https://github.com/lunnicingus/HF-viewer/raw/main/HFviewer.user.js
-// @downloadURL  https://github.com/lunnicingus/HF-viewer/raw/main/HFviewer.user.js
 // @grant        none
 // ==/UserScript==
-/* eslint-env browser, es2022, greasemonkey */
-/* global preact:readonly, htm:readonly */
 /**
 * Changelog
+* 1.2 (edits by nhj4365)
+* - add: freeleech identifier
+* - add: status icons
+* - add: new torrent indicator
+* - add: support for the bookmarks page
 *
 * 1.1 (Fixed Version)
 * - fix: Added globals for ESlint configuration
@@ -24,7 +26,6 @@
 * 1.0
 * - Original script
 */
-
 
 (function() {
     'use strict';
@@ -73,6 +74,22 @@
         'uploader': 10
     };
 
+   if (location.pathname === '/torrents.php') {
+       const action=new URLSearchParams(location.search).get("action");
+       if (action)
+       {
+           switch(action) {
+               case "notify":
+                   // Notifications page has all columns shifted over by 1 to make space for the checkbox
+                   for (const [cat,pos] of (Object.entries(cellidx)))
+                   {
+                       cellidx[cat]++;
+                   }
+                   break;
+           };
+       }
+   }
+
    if (location.pathname === '/collages.php') {
         cellidx = {
             'category': 1,
@@ -85,6 +102,20 @@
             'leechers': 6
         };
     }
+
+   if (location.pathname === '/bookmarks.php') {
+        cellidx = {
+            'category': 1,
+            'main': 2,
+            'icons': 3,
+            'time': 5,
+            'size': 6,
+            'snatches': 7,
+            'seeders': 8,
+            'leechers': 9,
+            'uploader': 10
+        };
+   }
 
     // FIXED: Updated column mapping for top10.php based on actual HTML structure
     if (location.pathname === '/top10.php') {
@@ -133,6 +164,31 @@
             }
             return 'Unknown Title'; // Clean fallback
         }),
+        freeleech: selectorFn(row => {
+            let iconCell=row.querySelector(`td:nth-child(${cellidx.icons}) span img[alt*="Freeleech"]`);
+            return iconCell ? true : false;
+        }),
+        icons: selectorFn(row => {
+            //let newCell=row.querySelector(`td:nth-child(${cellidx.icons}) span.newtorrent`);
+            //return newCell ? true : false;
+            let iconsCell=row.querySelector(`td:nth-child(${cellidx.icons})`);
+            let freeleechCell=iconsCell.querySelector(`span img[alt*="Freeleech"]`);
+            let bookmarkCell=iconsCell.querySelector(`span img[alt*="bookmarked"]`);
+            let newCell=iconsCell.querySelector(`span.newtorrent`);
+            let iconCells=iconsCell.querySelectorAll(`span.icon`);
+            let iconHTML="";
+            for (const iconCell of iconCells) {
+                let icon=iconCell
+                let parent=icon.parentElement
+                if (parent) {
+                    if (parent.tagName.toLowerCase()=="a") {
+                        icon=parent;
+                    }
+                }
+                iconHTML+=icon.outerHTML
+            }
+            return (newCell?newCell.outerHTML:"")+(bookmarkCell?bookmarkCell.outerHTML:"")+(freeleechCell?freeleechCell.outerHTML:"")+iconHTML;
+        }),
         uploader: selectorFn(row => {
             if (!cellidx.uploader) return null;
             const link = row.querySelector(`td:nth-child(${cellidx.uploader}) a`);
@@ -160,12 +216,24 @@
         }),
         cover: selectorFn(row => {
             const coverScript = row.querySelector(`td:nth-child(${cellidx.main}) script`)?.innerHTML;
-            if (!coverScript) return ''; // DEBUG: Check if script exists
 
-            //const re = location.origin.includes('pornbay.org') ? /src=([^>]+)/i : /src=\\"([^"]+)/i;
-            const re = /src=\\"([^"]+)/i;
-            const match = coverScript.match(re);
-            return match ? match[1].replace(/\\/g, '') : ''; // DEBUG: Check for match
+            var coverUrl='';
+            if (coverScript) {
+                //const re = location.origin.includes('pornbay.org') ? /src=([^>]+)/i : /src=\\"([^"]+)/i;
+                const re = /src=\\"([^"]+)/i;
+                const match = coverScript.match(re);
+                coverUrl= match ? match[1].replace(/\\/g, '') : ''; // DEBUG: Check for match
+            }
+            else {
+                const rowID=row.getAttribute("id");
+                if (rowID) {
+                    const coverImg=document.querySelector(`li.image_${rowID} img`);
+                    coverUrl=coverImg?.getAttribute("src");
+                    coverImg.style.display = 'none';
+                }
+            }
+
+            return coverUrl;
         }),
 
         time: selectorFn(row => {
