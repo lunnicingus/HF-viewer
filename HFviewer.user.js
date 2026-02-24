@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HFviewer
-// @version      1.2
+// @version      1.2.1
 // @namespace    https://github.com/lunnicingus/HF-viewer
 // @description  Better porn browse - based off the original EMPViewer
 // @author       lunnicingus
@@ -8,12 +8,19 @@
 // @match        https://www.happyfappy.org/top10.php*
 // @match        https://www.happyfappy.org/collages.php*
 // @match        https://www.happyfappy.org/bookmarks.php*
+// @match        https://www.happyfappy.net/torrents.php*
+// @match        https://www.happyfappy.net/top10.php*
+// @match        https://www.happyfappy.net/collages.php*
+// @match        https://www.happyfappy.net/bookmarks.php*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/preact/10.16.0/preact.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/htm/3.1.1/htm.js
 // @grant        none
 // ==/UserScript==
 /**
 * Changelog
+* 1.2.1
+* - fix: new tld .net
+*
 * 1.2 (edits by nhj4365)
 * - add: freeleech identifier
 * - add: status icons
