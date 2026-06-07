@@ -1,13 +1,9 @@
 // ==UserScript==
 // @name         HFviewer
-// @version      1.2.1
+// @version      1.2.2
 // @namespace    https://github.com/lunnicingus/HF-viewer
 // @description  Better porn browse - based off the original EMPViewer
 // @author       lunnicingus
-// @match        https://www.happyfappy.org/torrents.php*
-// @match        https://www.happyfappy.org/top10.php*
-// @match        https://www.happyfappy.org/collages.php*
-// @match        https://www.happyfappy.org/bookmarks.php*
 // @match        https://www.happyfappy.net/torrents.php*
 // @match        https://www.happyfappy.net/top10.php*
 // @match        https://www.happyfappy.net/collages.php*
@@ -18,6 +14,9 @@
 // ==/UserScript==
 /**
 * Changelog
+* 1.2.2
+* - change: target .net only (drop deprecated .org tld)
+*
 * 1.2.1
 * - fix: new tld .net
 *
