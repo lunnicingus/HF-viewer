@@ -73,4 +73,6 @@ in a different layout.
 - Inspired by **EMPViewer**
 - Uses **Preact** and **HTM**
 - Original author: `lunnicingus`
-- Additional edits and fixes by nhj4365
+- Additional edits and fixes by:
+- nhj4365
+- JenC
